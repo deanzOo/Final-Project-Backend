@@ -6,7 +6,7 @@
   "scripts": {
     "compile:w": "tsc -w -p src --outDir dist",
     "compile": "tsc -p src --outDir dist",
-    "dev": "nodemon dist/index.js",
+    "dev": "nodemon --inspect dist/index.js",
     "start": "node dist/index.js"
   },
   "author": "",
