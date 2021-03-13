@@ -4,15 +4,17 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 // @ts-ignore
 import { errors, http_codes} from '../config/errors';
+import * as NodeCache from 'node-cache';
+import {ContainerBuilder} from "node-dependency-injection";
 
-function Auth (mysqlConnection: mysql.Connection) {
+function Auth (DIContainer: ContainerBuilder) {
     const router: express.Router = express.Router();
 
     /**
      * /api/auth
      */
     router.post('/', (req: express.Request, res: express.Response, next) => {
-        mysqlConnection.query(
+        DIContainer.get('db').query(
             `SELECT * FROM users WHERE phone = "${req.body?.phone}"`,
             (error: mysql.MysqlError, select_results: any, fields: mysql.FieldInfo[]) => {
             if (error) {
@@ -29,50 +31,48 @@ function Auth (mysqlConnection: mysql.Connection) {
                 else {
                     bcrypt.compare(req.body?.password, select_results?.[0]?.password, function (err, compare_result) {
                         if (err) {
-                            console.error('should log this');
-                            console.error(error);
                             res.status(http_codes.INTERNAL_SERVER_ERROR).send();
                         }
-                        if (compare_result == true) {
+                        else if (compare_result == true) {
                             /**
                              * If the passwords match, create or update a session key for the user
                              */
-                            const session_key = crypto.randomBytes(20).toString('hex');
+                            const userId: number = parseInt(select_results?.[0]?.id);
+                            const session_key = userId + '__' + Date.now() + '__' + crypto.randomBytes(20).toString('hex');
 
                             const data = {
-                                user_id: parseInt(select_results?.[0]?.id),
+                                user_id: userId,
                                 session_key: session_key,
                             };
-                            mysqlConnection.query(
+                            DIContainer.get('db').query(
                                 'INSERT INTO users_session SET ?',
                                 data,
                                 (error: mysql.MysqlError, insert_results: any, fields: mysql.FieldInfo[]) => {
                                     if (error) {
                                         if (error.errno == 1062) { // duplicate entry
-                                            mysqlConnection.query(
-                                                `UPDATE users_session SET session_key = "${session_key}" WHERE user_id = ${parseInt(select_results?.[0]?.id)}`,
+                                            DIContainer.get('db').query(
+                                                `UPDATE users_session SET session_key = "${session_key}" WHERE user_id = ${userId}`,
                                                 (error: mysql.MysqlError, update_results: any, fields: mysql.FieldInfo[]) => {
                                                     if (error) {
-                                                        console.error('should log this');
-                                                        console.error(error);
                                                         res.status(http_codes.INTERNAL_SERVER_ERROR).send();
                                                     } else if (update_results.affectedRows === 0) { // bad params probably
                                                         res.status(http_codes.BAD_REQUEST).send();
-                                                    } else
+                                                    } else {
+                                                        DIContainer.get('cache').set(session_key, select_results[0])
                                                         res.status(http_codes.OK).send({session_key: session_key});
+                                                    }
                                                 });
                                         } else {
-                                            console.error('should log this');
-                                            console.error(error);
                                             res.status(http_codes.INTERNAL_SERVER_ERROR).send();
                                         }
                                     } else if (insert_results.affectedRows === 0) { // bad params probably
                                         res.status(http_codes.BAD_REQUEST).send();
-                                    } else
+                                    } else {
+                                        DIContainer.get('cache').set(session_key, select_results[0])
                                         res.status(http_codes.OK).send({session_key: session_key});
+                                    }
                                 });
                         } else {
-                            console.info('Unauthorized attempt. should log this.');
                             res.status(http_codes.UNAUTHORIZED).send();
                         }
                     });
@@ -97,7 +97,7 @@ function Auth (mysqlConnection: mysql.Connection) {
                 res.status(http_codes.INTERNAL_SERVER_ERROR);
             } else {
                 req.body.password = hash;
-                mysqlConnection.query(`INSERT INTO users SET ?`, req.body, (error: mysql.MysqlError, results: any, fields: mysql.FieldInfo[]) => {
+                DIContainer.get('db').query(`INSERT INTO users SET ?`, req.body, (error: mysql.MysqlError, results: any, fields: mysql.FieldInfo[]) => {
                     if (error) {
                         console.error('should log this');
                         console.error(error);
@@ -105,12 +105,13 @@ function Auth (mysqlConnection: mysql.Connection) {
                     } else if (results.affectedRows === 0) {
                         res.status(http_codes.BAD_REQUEST).send();
                     } else {
-                        const session_key = crypto.randomBytes(20).toString('hex');
+                        const userId: number = results.insertId;
+                        const session_key = userId + '__' + Date.now() + '__' + crypto.randomBytes(20).toString('hex');
                         const data = {
-                            user_id: results.insertId,
+                            user_id: userId,
                             session_key: session_key,
                         };
-                        mysqlConnection.query('INSERT INTO users_session SET ?', data, (error: mysql.MysqlError, session_result: any, fields: mysql.FieldInfo[]) => {
+                        DIContainer.get('db').query('INSERT INTO users_session SET ?', data, (error: mysql.MysqlError, session_result: any, fields: mysql.FieldInfo[]) => {
                             if (error) {
                                 console.error('should log this');
                                 console.error(error);
