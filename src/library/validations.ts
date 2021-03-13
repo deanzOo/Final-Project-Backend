@@ -1,9 +1,10 @@
 import * as mysql from 'mysql';
 
-export function cleanParams(req, res, next, mysqlConnection: mysql.Connection) {
-    Object.keys(req.body).map(key => {
-        req.body[key] = mysqlConnection.escape(req.body[key]);
-    });
-    return;
-    // next();
+export function cleanParams(mysqlConnection: mysql.Connection) {
+    return (req, res, next) => {
+        Object.keys(req.body).map(key => {
+            req.body[key] = mysqlConnection.escape(req.body[key]);
+        });
+        next();
+    }
 }

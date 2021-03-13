@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 // @ts-ignore
 import { errors, http_codes} from '../config/errors';
-import { cleanParams } from '../library/Validations';
 
 function Auth (mysqlConnection: mysql.Connection) {
     const router: express.Router = express.Router();
@@ -13,7 +12,6 @@ function Auth (mysqlConnection: mysql.Connection) {
      * /api/auth
      */
     router.post('/', (req: express.Request, res: express.Response, next) => {
-        cleanParams(req, res, next, mysqlConnection);
         mysqlConnection.query(
             `SELECT * FROM users WHERE phone = "${req.body?.phone}"`,
             (error: mysql.MysqlError, select_results: any, fields: mysql.FieldInfo[]) => {
@@ -87,7 +85,6 @@ function Auth (mysqlConnection: mysql.Connection) {
      * /api/auth/register
      */
     router.post('/register', (req: express.Request, res: express.Response, next) => {
-        cleanParams(req, res, next, mysqlConnection);
         const regexpr = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/g;
         const validPass = req.body?.password.match(regexpr);
         if (!validPass)

@@ -3,6 +3,8 @@ import * as mysql from 'mysql';
 import config from './config/config';
 import * as bodyParser from 'body-parser';
 
+import { cleanParams } from './library/validations';
+
 import Auth from './handlers/Auth';
 
 const app: express.Express = express();
@@ -17,7 +19,7 @@ try {
     });
 
     app.use(bodyParser.json());
-
+    app.use(cleanParams(mysqlConnection));
     app.use('/auth', Auth(mysqlConnection));
 
     app.listen(port, () => {
