@@ -9,7 +9,7 @@ function Admins (DIContainer: ContainerBuilder) {
 
     router.use(clientGuardian(DIContainer));
 
-    router.post('/', (req: express.Request, res: express.Response) => {
+    router.get('/', (req: express.Request, res: express.Response) => {
         res.status(200).send();
     });
 

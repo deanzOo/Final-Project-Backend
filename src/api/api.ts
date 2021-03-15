@@ -1,5 +1,4 @@
 import * as express from 'express';
-import { clientGuardian } from "../library/validations";
 // @ts-ignore
 import { errors, http_codes} from '../config/errors';
 import {ContainerBuilder} from "node-dependency-injection";
@@ -23,23 +22,21 @@ import Users from "./handlers/Users";
 function Api (DIContainer: ContainerBuilder) {
     const router: express.Router = express.Router();
 
-    // router.use(clientGuardian(DIContainer));
-
-    router.use('Admins', Admins(DIContainer));
-    router.use('Auth', Auth(DIContainer));
-    router.use('Classes', Classes(DIContainer));
-    router.use('ClassifiedImages', ClassifiedImages(DIContainer));
-    router.use('Datasets', Datasets(DIContainer));
-    router.use('Gans', Gans(DIContainer));
-    router.use('History', History(DIContainer));
-    router.use('Hyperparameters', Hyperparameters(DIContainer));
-    router.use('Images', Images(DIContainer));
-    router.use('Logos', Logos(DIContainer));
-    router.use('Metrics', Metrics(DIContainer));
-    router.use('ModelGroup', ModelGroup(DIContainer));
-    router.use('NeuralNetworks', NeuralNetworks(DIContainer));
-    router.use('Samples', Samples(DIContainer));
-    router.use('Users', Users(DIContainer));
+    router.use('/Admins', Admins(DIContainer));
+    router.use('/Auth', Auth(DIContainer));
+    router.use('/Classes', Classes(DIContainer));
+    router.use('/ClassifiedImages', ClassifiedImages(DIContainer));
+    router.use('/Datasets', Datasets(DIContainer));
+    router.use('/Gans', Gans(DIContainer));
+    router.use('/History', History(DIContainer));
+    router.use('/Hyperparameters', Hyperparameters(DIContainer));
+    router.use('/Images', Images(DIContainer));
+    router.use('/Logos', Logos(DIContainer));
+    router.use('/Metrics', Metrics(DIContainer));
+    router.use('/ModelGroup', ModelGroup(DIContainer));
+    router.use('/NeuralNetworks', NeuralNetworks(DIContainer));
+    router.use('/Samples', Samples(DIContainer));
+    router.use('/Users', Users(DIContainer));
 
     return router;
 }

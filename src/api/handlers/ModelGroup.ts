@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { clientGuardian } from "../../library/validations";
 // @ts-ignore
-import { errors, http_codes} from '../config/errors';
+import { errors, http_codes} from '../../config/errors';
 import {ContainerBuilder} from "node-dependency-injection";
 
 function ModelGroup (DIContainer: ContainerBuilder) {
@@ -9,7 +9,7 @@ function ModelGroup (DIContainer: ContainerBuilder) {
 
     router.use(clientGuardian(DIContainer));
 
-    router.post('/', (req: express.Request, res: express.Response) => {
+    router.get('/', (req: express.Request, res: express.Response) => {
         res.status(200).send();
     });
 
