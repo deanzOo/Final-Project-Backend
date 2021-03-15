@@ -23,14 +23,13 @@ export class UserModel {
 
     getUsers(options = {}) {
         const db: mysql.Connection = this.DIContainer.get('db');
-        db.query('SELECT * FROM ' + this.table_name, (err, res) => {
-            if (err) {
-                console.error(err)
-                return [];
-            }
+        db.query('SELECT * FROM ' + this.table_name, (err, result) => {
+            if (err)
+                options['res'].status(400).json();
             else {
-                return res;
+                const users = result.map(user => delete user.password);
+                options['res'].status(200).json(users);
             }
-        })
+        });
     }
 }

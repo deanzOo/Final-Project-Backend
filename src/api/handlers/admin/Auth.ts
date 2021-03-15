@@ -60,7 +60,8 @@ function Auth (DIContainer: ContainerBuilder) {
                                                     } else {
                                                         DIContainer.get('cache').set(session_key, select_results[0])
                                                         delete select_results[0].password;
-                                                        res.status(http_codes.OK).json({session_key: session_key, user: select_results[0]});
+                                                        select_results[0].session_key = session_key;
+                                                        res.status(http_codes.OK).json(select_results[0]);
                                                     }
                                                 });
                                         } else {
@@ -70,7 +71,8 @@ function Auth (DIContainer: ContainerBuilder) {
                                         res.status(http_codes.BAD_REQUEST).json();
                                     } else {
                                         DIContainer.get('cache').set(session_key, select_results[0])
-                                        res.status(http_codes.OK).json({session_key: session_key, user: select_results[0]});
+                                        select_results[0].session_key = session_key;
+                                        res.status(http_codes.OK).json(select_results[0]);
                                     }
                                 });
                         } else {
