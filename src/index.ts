@@ -53,8 +53,8 @@ try {
     const httpServer = http.createServer(app);
     const httpsServer = https.createServer(credentials, app);
 
-    httpServer.listen(8080);
-    httpsServer.listen(8443);
+    httpServer.listen(8080, '0.0.0.0');
+    httpsServer.listen(8443, '0.0.0.0');
     //
     // app.listen(port, hostname, () => {
     //     console.log( `Server listening at port ${ port }` );
