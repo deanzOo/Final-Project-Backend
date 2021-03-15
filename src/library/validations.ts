@@ -14,10 +14,10 @@ export function cleanParams(DIContainer: ContainerBuilder) {
 export function clientGuardian(DIContainer: ContainerBuilder) {
     return (req, res, next) => {
         const cache = DIContainer.get('cache');
-        const user = cache.get(req.headers?.Authorization ?? '');
+        const user = cache.get(req.headers?.authorization ?? '');
         if (!user) {
             const db = DIContainer.get('db');
-            db.query(`SELECT user_id FROM users_session WHERE session_key = ${db.escape(req.headers?.Authorization)}`, (error: mysql.MysqlError, sesseion_check: any) => {
+            db.query(`SELECT user_id FROM users_session WHERE session_key = ${db.escape(req.headers?.authorization)}`, (error: mysql.MysqlError, sesseion_check: any) => {
                 if (error) {
                     res.status(http_codes.INTERNAL_SERVER_ERROR).send();
                 } else {
