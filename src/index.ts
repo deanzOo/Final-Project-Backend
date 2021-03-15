@@ -26,8 +26,10 @@ DIContainer
 
 try {
     DIContainer.get('db').connect((err: mysql.MysqlError) => {
-        if (err)
+        if (err) {
+            console.error('cant connect to db', config.db);
             throw err;
+        }
     });
 
     app.get('/', (req, res) => {
