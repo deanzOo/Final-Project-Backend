@@ -11,7 +11,8 @@ import { cleanParams } from './library/validations';
 import Api from "./api/api";
 
 const app: express.Express = express();
-const port = config.server.port ?? 3000;
+const port = config.server.port;
+const hostname = config.server.hostname;
 
 let DIContainer = new ContainerBuilder();
 
@@ -39,7 +40,7 @@ try {
 
     app.use('/api', Api(DIContainer));
 
-    app.listen(port, () => {
+    app.listen(port, hostname, () => {
         console.log( `Server listening at port ${ port }` );
     });
 
