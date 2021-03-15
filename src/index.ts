@@ -1,4 +1,3 @@
-require('dotenv').config();
 import * as express from 'express';
 import * as mysql from 'mysql';
 import config from './config/config';
