@@ -5,6 +5,14 @@ import * as bodyParser from 'body-parser';
 import * as NodeCache from 'node-cache';
 import { ContainerBuilder } from "node-dependency-injection";
 import * as morgan from 'morgan';
+import * as http from 'http';
+import * as https from 'https';
+import * as fs from 'fs';
+
+const privateKey = fs.readFileSync('~/etc/ssl/private/ssl-cert-snakeoil.key')
+const certificate = fs.readFileSync('~/etc/ssl/certs/ssl-cert-snakeoil.pem')
+
+const credentials = {key: privateKey, cert: certificate};
 
 import { cleanParams } from './library/validations';
 
@@ -42,9 +50,15 @@ try {
 
     app.use('/api', Api(DIContainer));
 
-    app.listen(port, hostname, () => {
-        console.log( `Server listening at port ${ port }` );
-    });
+    const httpServer = http.createServer(app);
+    const httpsServer = https.createServer(credentials, app);
+
+    httpServer.listen(8080);
+    httpsServer.listen(8443);
+    //
+    // app.listen(port, hostname, () => {
+    //     console.log( `Server listening at port ${ port }` );
+    // });
 
 }
 catch (err) {
