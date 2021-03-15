@@ -8,26 +8,23 @@ import * as morgan from 'morgan';
 
 import { cleanParams } from './library/validations';
 
-import Auth from './handlers/Auth';
-import Hyperparameters from "./handlers/Hyperparameters";
+import Api from "./api/api";
 
 const app: express.Express = express();
 const port = config.server.port ?? 3000;
 
 let DIContainer = new ContainerBuilder();
 
-const sessionsCache = new NodeCache(config.sessionsCacheOptions);
 DIContainer
     .register('cache', NodeCache)
     .addArgument(config.sessionsCacheOptions);
 
-const mysqlConnection: mysql.Connection = mysql.createConnection(config?.db);
 DIContainer
     .register('db', mysql.createConnection)
     .addArgument(config.db);
 
 try {
-    mysqlConnection.connect((err: mysql.MysqlError) => {
+    DIContainer.get('db').connect((err: mysql.MysqlError) => {
         if (err)
             throw err;
     });
@@ -36,8 +33,7 @@ try {
     app.use(bodyParser.json());
     app.use(cleanParams(DIContainer));
 
-    app.use('/auth', Auth(DIContainer));
-    app.use('/hypers', Hyperparameters(DIContainer));
+    app.use('/api', Api(DIContainer));
 
     app.listen(port, () => {
         console.log( `Server listening at port ${ port }` );
@@ -46,6 +42,4 @@ try {
 }
 catch (err) {
     console.error(err);
-    console.error('Server failed to start');
-    console.log('Should log this')
 }

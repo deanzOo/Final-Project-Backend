@@ -3,7 +3,7 @@ import * as mysql from 'mysql';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 // @ts-ignore
-import { errors, http_codes} from '../config/errors';
+import { errors, http_codes} from '../../config/errors';
 import * as NodeCache from 'node-cache';
 import {ContainerBuilder} from "node-dependency-injection";
 
