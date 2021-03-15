@@ -8,6 +8,7 @@ import * as morgan from 'morgan';
 import * as http from 'http';
 import * as https from 'https';
 import * as fs from 'fs';
+import * as cors from 'cors';
 
 const privateKey = fs.readFileSync('~/etc/ssl/private/ssl-cert-snakeoil.key')
 const certificate = fs.readFileSync('~/etc/ssl/certs/ssl-cert-snakeoil.pem')
@@ -40,10 +41,7 @@ try {
         }
     });
 
-    app.get('/', (req, res) => {
-        res.status(200).send();
-    })
-
+    app.use(cors());
     app.use(morgan('combined'));
     app.use(bodyParser.json());
     app.use(cleanParams(DIContainer));

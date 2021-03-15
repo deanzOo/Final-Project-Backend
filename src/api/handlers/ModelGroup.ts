@@ -10,7 +10,7 @@ function ModelGroup (DIContainer: ContainerBuilder) {
     router.use(clientGuardian(DIContainer));
 
     router.get('/', (req: express.Request, res: express.Response) => {
-        res.status(200).send();
+        res.status(200).json();
     });
 
     return router;

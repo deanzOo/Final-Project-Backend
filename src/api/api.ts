@@ -38,6 +38,10 @@ function Api (DIContainer: ContainerBuilder) {
     router.use('/Samples', Samples(DIContainer));
     router.use('/Users', Users(DIContainer));
 
+    router.get('/', (req, res) => {
+        res.status(200).json({'message': 'test route'});
+    })
+
     return router;
 }
 
