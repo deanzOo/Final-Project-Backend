@@ -5,21 +5,14 @@ import * as bodyParser from 'body-parser';
 import * as NodeCache from 'node-cache';
 import { ContainerBuilder } from "node-dependency-injection";
 import * as morgan from 'morgan';
-import * as http from 'http';
-import * as https from 'https';
-import * as fs from 'fs';
 import * as cors from 'cors';
-
-const privateKey = fs.readFileSync('~/etc/ssl/private/ssl-cert-snakeoil.key')
-const certificate = fs.readFileSync('~/etc/ssl/certs/ssl-cert-snakeoil.pem')
-
-const credentials = {key: privateKey, cert: certificate};
 
 import { cleanParams } from './library/validations';
 
 import Api from "./api/api";
 
 const app: express.Express = express();
+app.use(cors({origin: 'http://localhost:4200'}));
 const port = config.server.port;
 const hostname = config.server.hostname;
 
@@ -41,22 +34,16 @@ try {
         }
     });
 
-    app.use(cors());
+
     app.use(morgan('combined'));
     app.use(bodyParser.json());
     app.use(cleanParams(DIContainer));
 
     app.use('/api', Api(DIContainer));
 
-    const httpServer = http.createServer(app);
-    const httpsServer = https.createServer(credentials, app);
-
-    httpServer.listen(8080, '0.0.0.0');
-    httpsServer.listen(8443, '0.0.0.0');
-    //
-    // app.listen(port, hostname, () => {
-    //     console.log( `Server listening at port ${ port }` );
-    // });
+    app.listen(5000, '0.0.0.0', () => {
+        console.log( `Server listening at port ${ port }` );
+    });
 
 }
 catch (err) {
