@@ -1,10 +1,10 @@
 import * as express from 'express';
-import { clientGuardian } from "../../library/validations";
+import { clientGuardian } from "../../../library/validations";
 // @ts-ignore
-import { errors, http_codes} from '../../config/errors';
+import { errors, http_codes} from '../../../config/errors';
 import {ContainerBuilder} from "node-dependency-injection";
 
-function NeuralNetworks (DIContainer: ContainerBuilder) {
+function History (DIContainer: ContainerBuilder) {
     const router: express.Router = express.Router();
 
     router.use(clientGuardian(DIContainer));
@@ -16,4 +16,4 @@ function NeuralNetworks (DIContainer: ContainerBuilder) {
     return router;
 }
 
-export default NeuralNetworks;
+export default History;

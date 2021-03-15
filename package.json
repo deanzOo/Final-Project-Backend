@@ -7,7 +7,7 @@
     "compile:w": "tsc -w -p src --outDir dist",
     "compile": "tsc -p src --outDir dist",
     "dev": "nodemon --inspect dist/index.js",
-    "start": "node dist/index.js"
+    "start": "npm run compile && node dist/index.js"
   },
   "author": "",
   "license": "ISC",

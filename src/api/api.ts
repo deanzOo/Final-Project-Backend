@@ -3,21 +3,21 @@ import * as express from 'express';
 import { errors, http_codes} from '../config/errors';
 import {ContainerBuilder} from "node-dependency-injection";
 
-import Admins from "./handlers/Admins";
-import Auth from "./handlers/Auth";
-import Classes from "./handlers/Classes";
-import ClassifiedImages from "./handlers/ClassifiedImages";
-import Datasets from "./handlers/Datasets";
-import Gans from "./handlers/Gans";
-import History from "./handlers/History";
-import Hyperparameters from "./handlers/Hyperparameters";
-import Images from "./handlers/Images";
-import Logos from "./handlers/Logos";
-import Metrics from "./handlers/Metrics";
-import ModelGroup from "./handlers/ModelGroup";
-import NeuralNetworks from "./handlers/NeuralNetworks";
-import Samples from "./handlers/Samples";
-import Users from "./handlers/Users";
+import Admins from "./handlers/admin/Admins";
+import Auth from "./handlers/admin/Auth";
+import Classes from "./handlers/admin/Classes";
+import ClassifiedImages from "./handlers/admin/ClassifiedImages";
+import Datasets from "./handlers/admin/Datasets";
+import Gans from "./handlers/admin/Gans";
+import History from "./handlers/admin/History";
+import Hyperparameters from "./handlers/admin/Hyperparameters";
+import Images from "./handlers/admin/Images";
+import Logos from "./handlers/admin/Logos";
+import Metrics from "./handlers/admin/Metrics";
+import ModelGroup from "./handlers/admin/ModelGroup";
+import NeuralNetworks from "./handlers/admin/NeuralNetworks";
+import Samples from "./handlers/admin/Samples";
+import UsersController from "./handlers/admin/users.controller";
 
 function Api (DIContainer: ContainerBuilder) {
     const router: express.Router = express.Router();
@@ -36,7 +36,7 @@ function Api (DIContainer: ContainerBuilder) {
     router.use('/ModelGroup', ModelGroup(DIContainer));
     router.use('/NeuralNetworks', NeuralNetworks(DIContainer));
     router.use('/Samples', Samples(DIContainer));
-    router.use('/Users', Users(DIContainer));
+    router.use('/Users', UsersController(DIContainer));
 
     router.get('/', (req, res) => {
         res.status(200).json({'message': 'test route'});

@@ -1,7 +1,7 @@
 import * as express from 'express';
-import { clientGuardian } from "../../library/validations";
+import { clientGuardian } from "../../../library/validations";
 // @ts-ignore
-import { errors, http_codes} from '../../config/errors';
+import { errors, http_codes} from '../../../config/errors';
 import {ContainerBuilder} from "node-dependency-injection";
 
 function Samples (DIContainer: ContainerBuilder) {
