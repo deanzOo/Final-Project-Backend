@@ -88,10 +88,12 @@ function Auth (DIContainer: ContainerBuilder) {
      * /api/auth/register
      */
     router.post('/register', (req: express.Request, res: express.Response, next) => {
-        const regexpr = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/g;
+        // regular expression for at least 8 chars, containing at least 1 lowercase, at least 1 uppercase, at least 1 digit and at least 1 special char
+        // const regexpr = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/g;
+        const regexpr = /[A-Za-z\d@$!%*?&:()]{6,}/g;
         const validPass = req.body?.password.match(regexpr);
         if (!validPass)
-            res.status(http_codes.BAD_REQUEST).json({'message': 'Password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character [ @ $ ! % * ? & ]'});
+            res.status(http_codes.BAD_REQUEST).json({'message': 'Password must contain at least 6 characters'});
         else {
             bcrypt.hash(req.body.password, 10, (err, hash) => {
             if (err) {
@@ -131,6 +133,18 @@ function Auth (DIContainer: ContainerBuilder) {
         });
         }
     });
+
+    router.patch('/', (req, res) => {
+        const user_id = req.body?.id;
+        delete req.body?.id;
+        DIContainer.get('db').query(`UPDATE users SET ? WHERE id = ${user_id}`, req.body, (err, update_result) => {
+            if (err)
+                res.status(http_codes.INTERNAL_SERVER_ERROR).json();
+            else {
+                res.status(http_codes.OK).json();
+            }
+        })
+    })
 
     return router;
 }

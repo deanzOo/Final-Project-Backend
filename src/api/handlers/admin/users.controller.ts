@@ -12,7 +12,7 @@ function UsersController (DIContainer: ContainerBuilder) {
 
     router.get('/', (req: express.Request, res: express.Response) => {
         const um = UserModel.getInstance(DIContainer);
-        const result = um.getUsers({res: res});
+        um.getUsers({res: res});
     });
 
     return router;
