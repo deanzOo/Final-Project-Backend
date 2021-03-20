@@ -34,7 +34,7 @@ export default class AuthController extends Controller {
                 if (data.success) {
                     super.sendSuccess(res, data.data!, data.message);
                 } else {
-                    super.sendError(res, data.message);
+                    super.sendError(res, data.message, data.statusCode);
                 }
             } catch (e) {
                 console.log(e);
@@ -51,7 +51,7 @@ export default class AuthController extends Controller {
             if (data.success) {
                 super.sendSuccess(res, data.data!, data.message);
             } else {
-                super.sendError(res, data.message);
+                super.sendError(res, data.message, data.statusCode);
             };
         } catch(e) {
             console.log(e);

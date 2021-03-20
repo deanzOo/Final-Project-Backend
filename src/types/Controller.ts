@@ -54,8 +54,8 @@ export default abstract class Controller {
         return res.status(200).json(data);
     }
 
-    protected sendError(res: express.Response, message?: string): express.Response {
-        return res.status(500).json({
+    protected sendError(res: express.Response, message?: string, statusCode?: number): express.Response {
+        return res.status(statusCode ?? 500).json({
             message: message || 'internal server error'
         });
     }

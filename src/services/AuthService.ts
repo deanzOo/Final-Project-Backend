@@ -8,6 +8,7 @@ interface AuthReturnData {
     message: string;
     success: boolean;
     data?: object;
+    statusCode?: number;
 }
 
 export default class AuthService {
@@ -24,7 +25,7 @@ export default class AuthService {
         try {
             const userFromDb = await db.User.findOne({where: { phone: this.phone }});
             if (!userFromDb)
-                return ({ message: 'No such user', success: false });
+                return ({ message: 'No such user', success: false, statusCode: 400});
             else {
                 const isPasswordEqual = await bcrypt.compare(this.password, userFromDb.password);
                 if (isPasswordEqual) {
@@ -43,7 +44,7 @@ export default class AuthService {
                     const data = this.prepareData(userFromDb, token);
                     return({ message: 'Successfully logged in', success: true, data: data.user });
                 } else {
-                    return({ message: 'Invalid password', success: false });
+                    return({ message: 'Invalid password', success: false, statusCode: 401 });
                 }
             }
         } catch(e) {
@@ -75,7 +76,7 @@ export default class AuthService {
                 const data = this.prepareData(createdUser, token);
                 return({ message: 'Successfully registered', success: true, data: data.user });
             } else {
-                return({ message: 'User already exists', success: false });
+                return({ message: 'User already exists', success: false , statusCode: 400});
             }
         } catch(e) {
             console.log(e);
