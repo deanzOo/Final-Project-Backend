@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "allowSyntheticDefaultImports": true
   }
 }

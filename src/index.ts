@@ -1,51 +1,31 @@
 import * as express from 'express';
-import * as mysql from 'mysql';
 import config from './config/config';
-import * as bodyParser from 'body-parser';
-import * as NodeCache from 'node-cache';
-import { ContainerBuilder } from "node-dependency-injection";
-import * as morgan from 'morgan';
+import {json, urlencoded} from 'body-parser';
 import * as cors from 'cors';
+import db from './models/index';
 
-import { cleanParams } from './library/validations';
+import Server from "./types/Server";
+import Controller from "./types/Controller";
 
-import Api from "./api/api";
+import AuthController from "./controllers/AuthController";
 
-const app: express.Express = express();
-app.use(cors({origin: 'http://localhost:4200'}));
-const port = config.server.port;
-const hostname = config.server.hostname;
+const app: express.Application = express();
+const server: Server = new Server(app, db.sequelize, config.server.port);
 
-let DIContainer = new ContainerBuilder();
+const controllers: Array<Controller> = [
+    new AuthController(),
+];
 
-DIContainer
-    .register('cache', NodeCache)
-    .addArgument(config.sessionsCacheOptions);
+const globalMiddleware: Array<express.RequestHandler> = [
+    urlencoded({ extended: false }),
+    json(),
+    cors({ credentails: true, origin: true })
+]
 
-DIContainer
-    .register('db', mysql.createConnection)
-    .addArgument(config.db);
-
-try {
-    DIContainer.get('db').connect((err: mysql.MysqlError) => {
-        if (err) {
-            console.error('cant connect to db', config.db);
-            throw err;
-        }
-    });
-
-
-    app.use(morgan('combined'));
-    app.use(bodyParser.json());
-    app.use(cleanParams(DIContainer));
-
-    app.use('/api', Api(DIContainer));
-
-    app.listen(5000, '0.0.0.0', () => {
-        console.log( `Server listening at port ${ port }` );
-    });
-
-}
-catch (err) {
-    console.error(err);
-}
+Promise.resolve()
+    .then(() => server.initDatabase())
+    .then(() => {
+        server.loadMiddleware(globalMiddleware);
+        server.loadControllers(controllers);
+        server.run();
+    })
