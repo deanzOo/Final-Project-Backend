@@ -8,18 +8,22 @@ import Server from "./types/Server";
 import Controller from "./types/Controller";
 
 import AuthController from "./controllers/AuthController";
+import AuthMiddleware from "./middlewares/AuthMiddleware";
+import UsersController from "./controllers/UsersController";
 
 const app: express.Application = express();
 const server: Server = new Server(app, db.sequelize, config.server.port);
 
 const controllers: Array<Controller> = [
     new AuthController(),
+    new UsersController()
 ];
 
 const globalMiddleware: Array<express.RequestHandler> = [
     urlencoded({ extended: false }),
     json(),
-    cors({ credentails: true, origin: true })
+    cors({ credentails: true, origin: true }),
+    new AuthMiddleware().CheckAuthHeader()
 ]
 
 Promise.resolve()

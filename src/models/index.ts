@@ -27,8 +27,8 @@ const db: IDatabase = {
 };
 
 db.sequelize.sync()
-.then(() => console.log('Database & tables synced'))
-.catch(e => console.log(e));
+    .then(() => console.log('Database & tables synced'))
+    .catch(e => console.log(e));
 
 export default db;
 export type UserModel = IUser;

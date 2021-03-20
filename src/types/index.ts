@@ -4,9 +4,16 @@ export interface ISafeUser {
     firstname?: string,
     lastname?: string,
     email?: string,
+    session_key?: string,
+    isAdmin?: true
+}
+
+export interface ISafeAuthData {
+    user?: ISafeUser;
     session_key?: string
 }
 
-export interface ISafeData {
-    user?: ISafeUser;
+export interface ISafeUsersData {
+    users?: ISafeUser[],
+    user?: ISafeUser
 }

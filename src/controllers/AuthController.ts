@@ -24,27 +24,29 @@ export default class AuthController extends Controller {
     }
 
     async handleLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const session_key = req.headers?.authorization;
-            const {phone, password} = req.body;
-            const userService = new AuthService(session_key, phone, password);
-            const data = await userService.login();
-            if (data.success) {
-                super.sendSuccess(res, data.data!, data.message);
-            } else {
-                super.sendError(res, data.message);
+        if (req.body?.user) {
+            super.sendSuccess(res, req.body.user);
+        } else {
+            try {
+                const {phone, password} = req.body;
+                const authService = new AuthService(phone, password);
+                const data = await authService.login();
+                if (data.success) {
+                    super.sendSuccess(res, data.data!, data.message);
+                } else {
+                    super.sendError(res, data.message);
+                }
+            } catch (e) {
+                console.log(e);
+                super.sendError(res)
             }
-        } catch (e) {
-            console.log(e);
-            super.sendError(res)
         }
     }
 
     async handleRegister(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const session_key = req.headers?.authorization;
             const { phone, password, firstname, lastname, email } = req.body;
-            const userService = new AuthService(session_key, phone, password, firstname, lastname, email);
+            const userService = new AuthService(phone, password, firstname, lastname, email);
             const data = await userService.register();
             if (data.success) {
                 super.sendSuccess(res, data.data!, data.message);
