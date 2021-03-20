@@ -10,7 +10,7 @@ interface AuthReturnData {
     data?: object;
 }
 
-export default class UserService {
+export default class AuthService {
     constructor(
         public readonly session_key?: string,
         public readonly phone?: string,

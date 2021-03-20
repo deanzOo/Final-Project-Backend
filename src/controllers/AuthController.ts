@@ -1,6 +1,6 @@
 import Controller, {Methods} from "../types/Controller";
 import {NextFunction, Request, Response} from "express";
-import UserService from "../services/UserService";
+import AuthService from "../services/AuthService";
 
 export default class AuthController extends Controller {
     path = '/auth';
@@ -27,7 +27,7 @@ export default class AuthController extends Controller {
         try {
             const session_key = req.headers?.authorization;
             const {phone, password} = req.body;
-            const userService = new UserService(session_key, phone, password);
+            const userService = new AuthService(session_key, phone, password);
             const data = await userService.login();
             if (data.success) {
                 super.sendSuccess(res, data.data!, data.message);
@@ -44,7 +44,7 @@ export default class AuthController extends Controller {
         try {
             const session_key = req.headers?.authorization;
             const { phone, password, firstname, lastname, email } = req.body;
-            const userService = new UserService(session_key, phone, password, firstname, lastname, email);
+            const userService = new AuthService(session_key, phone, password, firstname, lastname, email);
             const data = await userService.register();
             if (data.success) {
                 super.sendSuccess(res, data.data!, data.message);
