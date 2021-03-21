@@ -7,7 +7,7 @@ import config from '../config/config';
 interface AuthReturnData {
     message: string;
     success: boolean;
-    data?: object;
+    data?: any;
     statusCode?: number;
 }
 

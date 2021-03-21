@@ -1,6 +1,7 @@
 import Controller, {Methods} from "../types/Controller";
 import {NextFunction, Request, Response} from "express";
 import AuthService from "../services/AuthService";
+import AdminService from "../services/AdminsService";
 
 export default class AuthController extends Controller {
     path = '/auth';
@@ -30,11 +31,16 @@ export default class AuthController extends Controller {
             try {
                 const {phone, password} = req.body;
                 const authService = new AuthService(phone, password);
-                const data = await authService.login();
-                if (data.success) {
-                    super.sendSuccess(res, data.data!, data.message);
+                let user_data = await authService.login();
+                if (user_data.success) {
+                    const adminService = new AdminService(user_data.data.id);
+                    console.log(adminService);
+                    const adminData = await adminService.getAdmins();
+                    if (adminData.success)
+                        user_data.data.isAdmin = true;
+                    super.sendSuccess(res, user_data.data!, user_data.message);
                 } else {
-                    super.sendError(res, data.message, data.statusCode);
+                    super.sendError(res, user_data.message, user_data.statusCode);
                 }
             } catch (e) {
                 console.log(e);
