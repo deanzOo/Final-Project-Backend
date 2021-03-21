@@ -1,10 +1,12 @@
 import {Sequelize} from "sequelize";
 import Config from '../config/config';
 import {getUser, IUser, UserModelStatic} from "./UserModel";
+import {getAdmin, IAdmin, AdminModelStatic} from "./AdminModel";
 
 interface IDatabase {
     sequelize: Sequelize;
     User: UserModelStatic;
+    Admin: AdminModelStatic;
 }
 
 const sequelize = new Sequelize(
@@ -20,10 +22,12 @@ const sequelize = new Sequelize(
 );
 
 const User = getUser(sequelize);
+const Admin = getAdmin(sequelize);
 
 const db: IDatabase = {
     sequelize,
     User,
+    Admin
 };
 
 db.sequelize.sync()
@@ -32,3 +36,4 @@ db.sequelize.sync()
 
 export default db;
 export type UserModel = IUser;
+export type AdminModel = IAdmin;

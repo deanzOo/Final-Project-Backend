@@ -2,10 +2,11 @@ import db from '../models/index';
 import { ISafeUsersData, ISafeUser } from "../types";
 import { Op } from "sequelize";
 
-interface AuthReturnData {
+interface UsersReturnData {
     message: string;
     success: boolean;
     data?: object;
+    statusCode?: number;
 }
 
 export default class UsersService {
@@ -18,7 +19,7 @@ export default class UsersService {
     ) {
     }
 
-    public async getUsers(): Promise<AuthReturnData> {
+    public async getUsers(): Promise<UsersReturnData> {
         try {
             let op_or = [];
             if (this.id)
