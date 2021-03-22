@@ -24,6 +24,13 @@ const sequelize = new Sequelize(
 const User = getUser(sequelize);
 const Admin = getAdmin(sequelize);
 
+User.hasOne(Admin, {
+    onDelete: 'CASCADE'
+});
+Admin.belongsTo(User, {
+    onDelete: 'NO ACTION'
+});
+
 const db: IDatabase = {
     sequelize,
     User,

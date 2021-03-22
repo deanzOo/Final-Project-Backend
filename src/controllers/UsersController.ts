@@ -1,6 +1,9 @@
 import Controller, {Methods} from "../types/Controller";
 import {NextFunction, Request, Response} from "express";
 import UsersService from "../services/UsersService";
+import AuthMiddleware from '../middlewares/AuthMiddleware';
+
+const authMW = new AuthMiddleware();
 
 export default class UsersController extends Controller {
     path = '/users';
@@ -9,7 +12,7 @@ export default class UsersController extends Controller {
             path: '/',
             method: Methods.GET,
             handler: this.getUsers,
-            localMiddleware: []
+            localMiddleware: [authMW.AdminGuardian()]
         },
         // {
         //     path: '/',

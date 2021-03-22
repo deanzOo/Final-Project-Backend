@@ -5,7 +5,7 @@ export interface ISafeUser {
     lastname?: string,
     email?: string,
     session_key?: string,
-    isAdmin?: true
+    isAdmin?: boolean
 }
 
 export interface ISafeAuthData {

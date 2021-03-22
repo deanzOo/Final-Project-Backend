@@ -10,6 +10,7 @@ import Controller from "./types/Controller";
 import AuthController from "./controllers/AuthController";
 import AuthMiddleware from "./middlewares/AuthMiddleware";
 import UsersController from "./controllers/UsersController";
+import AdminsController from "./controllers/AdminsController";
 
 const authMiddleware = new AuthMiddleware();
 
@@ -18,7 +19,8 @@ const server: Server = new Server(app, db.sequelize, config.server.port);
 
 const controllers: Array<Controller> = [
     new AuthController(),
-    new UsersController()
+    new UsersController(),
+    new AdminsController()
 ];
 
 const globalMiddleware: Array<express.RequestHandler> = [

@@ -46,4 +46,25 @@ export default class AuthMiddleware extends Middleware{
                 next();
         }
     }
+
+    public AdminGuardian() {
+        return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const user = req.body?.user;
+            if (user) {
+                try {
+                    const admin = await db.Admin.findOne({where: {user_id: user.id}});
+                    if (admin) {
+                        req.body.user.isAdmin = true;
+                        next();
+                    }
+                    else
+                        super.sendError(res, 'Unauthorized');
+                } catch (e) {
+                    console.log(e);
+                    super.sendError(res);
+                }
+            } else
+                super.sendError(res, 'Unauthorized');
+        }
+    }
 }

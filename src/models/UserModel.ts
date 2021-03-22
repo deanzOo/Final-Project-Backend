@@ -1,4 +1,5 @@
 import { BuildOptions, Sequelize, Model, DataTypes } from "sequelize";
+import {IAdmin} from "./AdminModel";
 
 export interface IUser extends Model {
     readonly id: number;
@@ -7,6 +8,7 @@ export interface IUser extends Model {
     readonly email?: string,
     readonly firstname?: string,
     readonly lastname?: string
+    readonly admin?: IAdmin
     readonly created_at: Date;
     readonly updated_at: Date;
 }
