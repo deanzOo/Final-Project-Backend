@@ -6,16 +6,17 @@ import db from "../models";
 
 export default class AuthMiddleware extends Middleware{
     public CheckAuthHeader() {
-        return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const session_key = req.headers?.authorization;
             if (session_key) {
                 try {
                     const tokenPayload = jwt.verify(session_key, config.ACCESS_TOKEN_SECRET);
-                    if (tokenPayload.exp < Date.now()) {
+                    const user = await db.User.findOne({where: {id: tokenPayload.safeUser.id, phone: tokenPayload.safeUser.phone}})
+                    if (user && tokenPayload.exp < Date.now()) {
                         req.body.user = tokenPayload.safeUser;
                         next();
                     } else
-                        super.sendError(res, 'Credentials expired');
+                        super.sendError(res, 'Credentials invalid');
                 } catch (e) {
                     if (e instanceof jwt.JsonWebTokenError)
                         next();
