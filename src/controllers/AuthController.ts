@@ -50,18 +50,23 @@ export default class AuthController extends Controller {
     }
 
     async handleRegister(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { phone, password, firstname, lastname, email } = req.body;
-            const userService = new AuthService(phone, password, firstname, lastname, email);
-            const data = await userService.register();
-            if (data.success) {
-                super.sendSuccess(res, data.data!, data.message);
-            } else {
-                super.sendError(res, data.message, data.statusCode);
-            };
-        } catch(e) {
-            console.log(e);
-            super.sendError(res);
+        if (req.body?.user) {
+            super.sendSuccess(res, req.body.user)
+        } else {
+            try {
+                const {phone, password, firstname, lastname, email} = req.body;
+                const userService = new AuthService(phone, password, firstname, lastname, email);
+                const data = await userService.register();
+                if (data.success) {
+                    super.sendSuccess(res, data.data!, data.message);
+                } else {
+                    super.sendError(res, data.message, data.statusCode);
+                }
+                ;
+            } catch (e) {
+                console.log(e);
+                super.sendError(res);
+            }
         }
     };
 }

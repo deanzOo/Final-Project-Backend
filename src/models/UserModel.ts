@@ -26,7 +26,10 @@ export function getUser(sequelize: Sequelize): UserModelStatic {
         phone: {
             type: DataTypes.STRING,
             unique: true,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                is: /^05[0-9]{8}$/i
+            }
         },
         password: {
             type: DataTypes.STRING,

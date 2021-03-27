@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import {ISafeAuthData, ISafeUser} from "../types";
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
+import {create} from "domain";
 
 interface AuthReturnData {
     message: string;
@@ -65,6 +66,7 @@ export default class AuthService {
                     lastname: this?.lastname,
                     email: this?.email
                 });
+                await createdUser.validate();
                 const safeUser: ISafeUser = {
                     id: createdUser.id,
                     phone: createdUser.phone,
