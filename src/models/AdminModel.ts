@@ -4,7 +4,7 @@ import {IUser} from "./UserModel";
 export interface IAdmin extends Model {
     readonly user_id: number;
     readonly permissions: number,
-    readonly user?: IUser
+    readonly user?: IUser,
 }
 
 export type AdminModelStatic = typeof Model & {
@@ -15,12 +15,15 @@ export function getAdmin(sequelize: Sequelize): AdminModelStatic {
         user_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
+            unique: true
         },
         permissions: {
-            type: DataTypes.JSON,
-            allowNull: false
-        },
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: 0
+        }
     }, {
+        timestamps: false,
         underscored: true
     });
 }

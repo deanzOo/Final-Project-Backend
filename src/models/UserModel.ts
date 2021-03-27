@@ -48,6 +48,7 @@ export function getUser(sequelize: Sequelize): UserModelStatic {
             allowNull: true
         },
     }, {
+        timestamps: false,
         underscored: true
     });
 }

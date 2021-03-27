@@ -25,7 +25,9 @@ const User = getUser(sequelize);
 const Admin = getAdmin(sequelize);
 
 User.hasOne(Admin, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    as: 'Admin',
+    foreignKey: 'user_id'
 });
 Admin.belongsTo(User, {
     onDelete: 'NO ACTION'

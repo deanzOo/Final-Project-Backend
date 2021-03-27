@@ -4,6 +4,7 @@ import UsersService from "../services/UsersService";
 import AuthMiddleware from '../middlewares/AuthMiddleware';
 
 const authMW = new AuthMiddleware();
+const adminGuard = authMW.AdminGuardian();
 
 export default class UsersController extends Controller {
     path = '/users';
@@ -12,7 +13,7 @@ export default class UsersController extends Controller {
             path: '/',
             method: Methods.GET,
             handler: this.getUsers,
-            localMiddleware: [authMW.AdminGuardian()]
+            localMiddleware: [adminGuard]
         },
         // {
         //     path: '/',

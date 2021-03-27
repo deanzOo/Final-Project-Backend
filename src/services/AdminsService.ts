@@ -31,15 +31,34 @@ export default class AdminService {
         }
     }
 
+    public async makeAdmin(user_id: number): Promise<AdminReturnData> {
+        try {
+            const user = await db.User.findOne({where: {id: user_id}});
+            if (!user) {
+                return ({message: 'no user with this id', success: false});
+            } else {
+                // @ts-ignore
+                let admin = await user.createAdmin({user_id: user.id, permissions: 0});
+                admin.user = user;
+                const data = this.prepareData([admin]);
+                return ({message: 'Success', success: true, data: data});
+            }
+        } catch (e) {
+            console.log(e);
+            return ({message: 'Failed', success: false});
+        }
+    }
+
     private prepareData(admins: IAdmin[]): ISafeUsersData {
         let safeAdmins: ISafeUser[] = [];
         admins.forEach(admin => {
+            // @ts-ignore
             safeAdmins.push({
                 id: admin.user_id,
-                phone: admin.user.phone,
-                email: admin.user.email,
-                firstname: admin.user.firstname,
-                lastname: admin.user.lastname,
+                phone: admin?.user?.phone,
+                email: admin?.user?.email,
+                firstname: admin?.user?.firstname,
+                lastname: admin?.user?.lastname,
                 isAdmin: true
             });
         });
