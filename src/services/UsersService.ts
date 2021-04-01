@@ -1,6 +1,7 @@
 import db from '../models/index';
 import { ISafeUsersData, ISafeUser } from "../types";
 import {IUser} from "../models/UserModel";
+import {Op} from "sequelize";
 
 interface UsersReturnData {
     message: string;
@@ -11,22 +12,57 @@ interface UsersReturnData {
 
 export default class UsersService {
     constructor(
-        public readonly id?: number,
-        public readonly phone?: string,
-        public readonly firstname?: string,
-        public readonly lastname?: string,
-        public readonly email?: string
     ) {
     }
 
-    public async getUsers(): Promise<UsersReturnData> {
+    public async getUsers(search?: string):
+        Promise<UsersReturnData> {
         try {
-            const usersFromDb = await db.User.findAll({include: 'admin'});
-            if (!usersFromDb)
-                return ({ message: 'No users found', success: false });
-            else {
-                const data = this.prepareData(usersFromDb);
-                return ({message: 'test', success: true, data: data});
+            if (search) {
+                /** Search Users by firstname, lastname, email or phone */
+                const usersFromDb = await db.User.findAll({
+                    where: {
+                        [Op.or]: [
+                            {
+                                phone: {
+                                    [Op.substring]: search
+                                }
+                            },
+                            {
+                                firstname: {
+                                    [Op.substring]: search
+                                }
+                            },
+                            {
+                                lastname: {
+                                    [Op.substring]: search
+                                }
+                            },
+                            {
+                                email: {
+                                    [Op.substring]: search
+                                }
+                            },
+                        ]
+                    }
+                });
+                if (!usersFromDb)
+                    return ({ message: 'No users found', success: false });
+                else {
+                    const data = this.prepareData(usersFromDb);
+                    return ({message: 'These users seem like a good fit', success: true, data: data});
+                }
+                /** End of searching Users by firstname, lastname, email or phone */
+            } else {
+                /** Getting all Users */
+                const usersFromDb = await db.User.findAll({include: 'Admin'});
+                if (!usersFromDb)
+                    return ({ message: 'No users found', success: false });
+                else {
+                    const data = this.prepareData(usersFromDb);
+                    return ({message: 'Here are all the users boss', success: true, data: data});
+                }
+                /** End of getting all Users */
             }
         } catch(e) {
             console.log(e);
@@ -47,6 +83,29 @@ export default class UsersService {
                     return ({message: 'User found', success: true, data: data});
                 }
             } catch(e) {
+                console.log(e);
+                return ({ message: 'An error occurred', success: false });
+            }
+        }
+    }
+
+    public async updateUser(user_id: number, phone?: string, firstname?: string, lastname?: string, email?: string): Promise<UsersReturnData> {
+        if (!user_id)
+            return ({ message: 'User id was not provided', success: false })
+        else {
+            try {
+                const userFromDb = await db.User.findOne({where: {id: user_id}});
+                if (!userFromDb)
+                    return ({ message: 'user was not found', success: false });
+                else {
+                    userFromDb.update({
+                        'phone': phone ?? userFromDb.phone,
+                        'firstname': firstname ?? userFromDb.firstname,
+                        'lastname': lastname ?? userFromDb.lastname,
+                        'email': email ?? userFromDb.email
+                    });
+                }
+            } catch (e) {
                 console.log(e);
                 return ({ message: 'An error occurred', success: false });
             }
