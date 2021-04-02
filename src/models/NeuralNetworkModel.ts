@@ -3,52 +3,33 @@ import { BuildOptions, Sequelize, Model, DataTypes } from "sequelize";
 export interface INeuralNetwork extends Model {
     readonly id: number;
     readonly name: string,
-    readonly hyper_params_id: string,
-    readonly dataset_id: string,
-    readonly create_at: string,
+    readonly hyper_params_id: number,
+    readonly dataset_id: number,
 }
 
-export type UserModelStatic = typeof Model & {
+export type NeuralNetworkModelStatic = typeof Model & {
     new (values?: object, options?: BuildOptions): INeuralNetwork
 }
-export function getUser(sequelize: Sequelize): UserModelStatic {
-    return <UserModelStatic>sequelize.define('user', {
+export function getNeuralNetwork(sequelize: Sequelize): NeuralNetworkModelStatic {
+    return <NeuralNetworkModelStatic>sequelize.define('neuralnetwork', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        phone: {
+        name: {
             type: DataTypes.STRING,
-            unique: true,
-            allowNull: false,
-            validate: {
-                is: /^05[0-9]{8}$/i
-            }
+            allowNull: true,
         },
-        password: {
-            type: DataTypes.STRING,
+        hyper_params_id: {
+            type: DataTypes.INTEGER,
             allowNull: false
         },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        firstname: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        lastname: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        deleted: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: false
+        dataset_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, {
-        timestamps: false,
         underscored: true
     });
 }

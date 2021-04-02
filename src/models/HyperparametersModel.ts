@@ -18,7 +18,7 @@ export type HyperparametersModelStatic = typeof Model & {
     new (values?: object, options?: BuildOptions): IHyperparameters
 }
 export function getHyperparameters(sequelize: Sequelize): HyperparametersModelStatic {
-    return <HyperparametersModelStatic>sequelize.define('user', {
+    return <HyperparametersModelStatic>sequelize.define('hyperparameters', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
