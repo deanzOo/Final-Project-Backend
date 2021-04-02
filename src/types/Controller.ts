@@ -14,16 +14,25 @@ interface IRoute {
     localMiddleware: ((req: express.Request, res: express.Response, next: express.NextFunction) => void)[];
 }
 
+interface ISubRoute {
+    path: string;
+    controller: Controller
+}
+
+
 export default abstract class Controller {
     public router: express.Router = express.Router();
     public path: string;
     protected readonly routes: Array<IRoute> = [];
-    constructor() {
+    protected readonly subroutes: Array<ISubRoute> = [];
+    protected readonly highLevelMiddleware: Array<(req: express.Request, res: express.Response, next: express.NextFunction) => void> = [];
+    constructor(highLevelMiddleware?: Array<(req: express.Request, res: express.Response, next: express.NextFunction) => void>) {
         this.router = express.Router();
         this.routes = [];
+        this.subroutes = [];
     }
 
-    public setRoutes = (): express.Router => {
+    private setRoutes = (): express.Router => {
         for (const route of this.routes) {
             for (const mw of route.localMiddleware) {
                 this.router.use(route.path, mw);
@@ -47,6 +56,30 @@ export default abstract class Controller {
             }
         }
 
+        return this.router;
+    }
+
+    private setSubRoutes = (): express.Router => {
+        for (const subroute of this.subroutes) {
+            this.router.use(subroute.path, subroute.controller.setup());
+        }
+
+        return this.router;
+    }
+
+    private setHigherLevelMiddleware = (): express.Router => {
+        for (const mw of this.highLevelMiddleware) {
+            for (let i = 0; i < this.routes.length ; i++) {
+                this.routes[i].localMiddleware.push(mw)
+            }
+        }
+        return this.router;
+    }
+
+    public setup = (): express.Router => {
+        this.setHigherLevelMiddleware();
+        this.setRoutes();
+        this.setSubRoutes();
         return this.router;
     }
 

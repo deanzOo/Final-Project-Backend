@@ -9,8 +9,7 @@ export interface IUser extends Model {
     readonly firstname?: string,
     readonly lastname?: string
     readonly Admin?: IAdmin
-    readonly created_at: Date;
-    readonly updated_at: Date;
+    readonly deleted?: boolean
 }
 
 export type UserModelStatic = typeof Model & {
@@ -47,6 +46,11 @@ export function getUser(sequelize: Sequelize): UserModelStatic {
             type: DataTypes.STRING,
             allowNull: true
         },
+        deleted: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
     }, {
         timestamps: false,
         underscored: true

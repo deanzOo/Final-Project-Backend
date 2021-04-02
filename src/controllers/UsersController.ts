@@ -35,8 +35,8 @@ export default class UsersController extends Controller {
         // }
     ];
 
-    constructor() {
-        super();
+    constructor(highLevelMiddleware?: Array<(req: Request, res: Response, next: NextFunction) => void>) {
+        super(highLevelMiddleware);
     }
 
     async getUsers(req: Request, res: Response, next: NextFunction): Promise<void> {

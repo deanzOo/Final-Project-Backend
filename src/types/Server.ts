@@ -21,14 +21,14 @@ export default class Server {
     }
 
     public loadMiddleware(middlewars: Array<RequestHandler>): void {
-        middlewars.forEach(middlewar => {
-            this.app.use(middlewar);
+        middlewars.forEach(mw => {
+            this.app.use(mw);
         })
     }
 
     public loadControllers(controllers: Array<Controller>) {
         controllers.forEach(controller => {
-            this.app.use(controller.path, controller.setRoutes());
+            this.app.use(controller.path, controller.setup());
         })
     }
 

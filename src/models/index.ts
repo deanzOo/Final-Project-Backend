@@ -2,11 +2,13 @@ import {Sequelize} from "sequelize";
 import Config from '../config/config';
 import {getUser, IUser, UserModelStatic} from "./UserModel";
 import {getAdmin, IAdmin, AdminModelStatic} from "./AdminModel";
+import {getHyperparameters, IHyperparameters, HyperparametersModelStatic} from "./HyperparametersModel";
 
 interface IDatabase {
     sequelize: Sequelize;
     User: UserModelStatic;
     Admin: AdminModelStatic;
+    Hyperparameters: HyperparametersModelStatic;
 }
 
 const sequelize = new Sequelize(
@@ -23,6 +25,7 @@ const sequelize = new Sequelize(
 
 const User = getUser(sequelize);
 const Admin = getAdmin(sequelize);
+const Hyperparameters = getHyperparameters(sequelize);
 
 User.hasOne(Admin, {
     onDelete: 'CASCADE',
@@ -36,7 +39,8 @@ Admin.belongsTo(User, {
 const db: IDatabase = {
     sequelize,
     User,
-    Admin
+    Admin,
+    Hyperparameters
 };
 
 db.sequelize.sync()
@@ -46,3 +50,4 @@ db.sequelize.sync()
 export default db;
 export type UserModel = IUser;
 export type AdminModel = IAdmin;
+export type HyperparametersModel = IHyperparameters;

@@ -99,7 +99,7 @@ export default class UsersService {
                 if (!userFromDb)
                     return ({ message: 'user was not found', success: false });
                 else {
-                    userFromDb.update({
+                    await userFromDb.update({
                         'phone': phone ?? userFromDb.phone,
                         'firstname': firstname ?? userFromDb.firstname,
                         'lastname': lastname ?? userFromDb.lastname,
@@ -107,6 +107,27 @@ export default class UsersService {
                     });
                     const data = this.prepareData([userFromDb]);
                     return ({message: 'User found', success: true, data: data});
+                }
+            } catch (e) {
+                console.log(e);
+                return ({ message: 'An error occurred', success: false });
+            }
+        }
+    }
+
+    public async toggleDeleteUser(user_id: number) {
+        if (!user_id)
+            return ({ message: 'User id was not provided', success: false })
+        else {
+            try {
+                const userFromDb = await db.User.findOne({where: {id: user_id}, include: 'Admin'});
+                if (!userFromDb)
+                    return ({ message: 'user was not found', success: false });
+                else {
+                    await userFromDb.update({
+                        deleted: 1 - + userFromDb.deleted
+                    });
+                    return ({message: 'User deleted', success: true, data: []});
                 }
             } catch (e) {
                 console.log(e);

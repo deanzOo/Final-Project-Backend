@@ -24,7 +24,7 @@ export default class AuthService {
 
     public async login(): Promise<AuthReturnData> {
         try {
-            const userFromDb = await db.User.findOne({where: { phone: this.phone }});
+            const userFromDb = await db.User.findOne({where: { phone: this.phone, deleted: false }});
             if (!userFromDb)
                 return ({ message: 'No such user', success: false, statusCode: 400});
             else {

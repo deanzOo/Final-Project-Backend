@@ -20,7 +20,9 @@ const server: Server = new Server(app, db.sequelize, config.server.port);
 const controllers: Array<Controller> = [
     new AuthController(),
     new UsersController(),
-    new AdminsController()
+    new AdminsController([
+        authMiddleware.AdminGuardian()
+    ])
 ];
 
 const globalMiddleware: Array<express.RequestHandler> = [

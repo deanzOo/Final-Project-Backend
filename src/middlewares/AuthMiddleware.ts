@@ -11,7 +11,7 @@ export default class AuthMiddleware extends Middleware{
             if (session_key) {
                 try {
                     const tokenPayload = jwt.verify(session_key, config.ACCESS_TOKEN_SECRET);
-                    const user = await db.User.findOne({where: {id: tokenPayload.safeUser.id, phone: tokenPayload.safeUser.phone}})
+                    const user = await db.User.findOne({where: {id: tokenPayload.safeUser.id, phone: tokenPayload.safeUser.phone, deleted: false}})
                     if (user && tokenPayload.exp < Date.now()) {
                         req.body.user = tokenPayload.safeUser;
                         next();
@@ -52,18 +52,10 @@ export default class AuthMiddleware extends Middleware{
         return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             const user = req.body?.user;
             if (user) {
-                try {
-                    const admin = await db.Admin.findOne({where: {user_id: user.id}});
-                    if (admin) {
-                        req.body.user.isAdmin = true;
-                        next();
-                    }
-                    else
-                        super.sendError(res, 'Unauthorized');
-                } catch (e) {
-                    console.log(e);
-                    super.sendError(res);
-                }
+                if (user.isAdmin)
+                    next();
+                else
+                    super.sendError(res, 'Unauthorized');
             } else
                 super.sendError(res, 'Unauthorized');
         }

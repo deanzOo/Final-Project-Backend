@@ -5,7 +5,7 @@ import {IAdmin} from "../models/AdminModel";
 interface AdminReturnData {
     message: string;
     success: boolean;
-    data?: ISafeUsersData;
+    data?: ISafeUser [];
     statusCode?: number;
 }
 
@@ -49,7 +49,26 @@ export default class AdminService {
         }
     }
 
-    private prepareData(admins: IAdmin[]): ISafeUsersData {
+    public async deleteAdmin(admin_id: number): Promise<AdminReturnData> {
+        if (!admin_id)
+            return ({ message: 'Admin id was not provided', success: false })
+        else {
+            try {
+                const adminFromDb = await db.Admin.findOne({where: {user_id: admin_id}});
+                if (!adminFromDb)
+                    return ({ message: 'Admin was not found', success: false });
+                else {
+                    await adminFromDb.destroy();
+                    return ({message: 'Admin deleted', success: true, data: []});
+                }
+            } catch (e) {
+                console.log(e);
+                return ({ message: 'An error occurred', success: false });
+            }
+        }
+    }
+
+    private prepareData(admins: IAdmin[]): ISafeUser [] {
         let safeAdmins: ISafeUser[] = [];
         admins.forEach(admin => {
             // @ts-ignore
@@ -62,12 +81,7 @@ export default class AdminService {
                 isAdmin: true
             });
         });
-        let data: ISafeUsersData;
-        if (safeAdmins.length > 1)
-            data = {admins: safeAdmins};
-        else
-            data = {admin: safeAdmins.pop()}
 
-        return data;
+        return safeAdmins;
     }
 }

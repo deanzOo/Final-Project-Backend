@@ -20,8 +20,8 @@ export default class AuthController extends Controller {
         }
     ];
 
-    constructor() {
-        super();
+    constructor(highLevelMiddleware?: Array<(req: Request, res: Response, next: NextFunction) => void>) {
+        super(highLevelMiddleware);
     }
 
     async handleLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -33,11 +33,6 @@ export default class AuthController extends Controller {
                 const authService = new AuthService(phone, password);
                 let user_data = await authService.login();
                 if (user_data.success) {
-                    const adminService = new AdminService(user_data.data.id);
-                    console.log(adminService);
-                    const adminData = await adminService.getAdmins();
-                    if (adminData.success)
-                        user_data.data.isAdmin = true;
                     super.sendSuccess(res, user_data.data!, user_data.message);
                 } else {
                     super.sendError(res, user_data.message, user_data.statusCode);
