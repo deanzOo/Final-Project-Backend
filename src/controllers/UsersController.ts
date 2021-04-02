@@ -13,7 +13,7 @@ export default class UsersController extends Controller {
             path: '/',
             method: Methods.GET,
             handler: this.getUsers,
-            localMiddleware: [adminGuard]
+            localMiddleware: []
         },
         // {
         //     path: '/',
@@ -22,7 +22,7 @@ export default class UsersController extends Controller {
         //     localMiddleware: []
         // },
         {
-            path: '/{id}',
+            path: `/:id`,
             method: Methods.PUT,
             handler: this.updateUser,
             localMiddleware: []
@@ -41,60 +41,32 @@ export default class UsersController extends Controller {
 
     async getUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const {id, phone, firstname, lastname, email} = req.body;
+            const id = req.query?.id;
+            const search = req.query?.search;
             const userService = new UsersService();
-            if (id) {
-                const data = await userService.getUser(id);
-                if (data.success) {
-                    super.sendSuccess(res, data.data!, data.message);
-                } else {
-                    super.sendError(res, data.message);
-                }
+
+            if (id && typeof id === "string") {
+                const userData = await userService.getUser(parseInt(id));
+                if (userData.success)
+                    super.sendSuccess(res, userData.data!, userData.message);
+                else
+                    super.sendError(res, userData.message);
             }
-            else if (!phone && !firstname && !lastname && !email) {
-                const data = await userService.getUsers();
-                if (data.success) {
-                    super.sendSuccess(res, data.data!, data.message);
+            else if (search && typeof search === "string") {
+                const usersData = await userService.getUsers(search);
+                if (usersData.success) {
+                    super.sendSuccess(res, usersData.data!, usersData.message);
                 } else {
-                    super.sendError(res, data.message);
+                    super.sendError(res, usersData.message);
                 }
             } else {
-                    let data = [];
-                    let messages = [];
-                    if (phone) {
-                        const temp_data = await userService.getUsers(phone);
-                        if (temp_data.success) {
-                            temp_data.data.forEach(user => data.push(user));
-                            messages.push(temp_data.message)
-                        } else
-                            super.sendError(res, temp_data.message);
-                    }
-                    if (firstname) {
-                        const temp_data = await userService.getUsers(firstname);
-                        if (temp_data.success) {
-                            temp_data.data.forEach(user => data.push(user));
-                            messages.push(temp_data.message)
-                        } else
-                            super.sendError(res, temp_data.message);
-                    }
-                    if (lastname) {
-                        const temp_data = await userService.getUsers(lastname);
-                        if (temp_data.success) {
-                            temp_data.data.forEach(user => data.push(user));
-                            messages.push(temp_data.message)
-                        } else
-                            super.sendError(res, temp_data.message);
-                    }
-                    if (email) {
-                        const temp_data = await userService.getUsers(email);
-                        if (temp_data.success) {
-                            temp_data.data.forEach(user => data.push(user));
-                            messages.push(temp_data.message)
-                        } else
-                            super.sendError(res, temp_data.message);
-                    }
-                    super.sendSuccess(res, data, messages.join('\n'));
+                const usersData = await userService.getUsers();
+                if (usersData.success) {
+                    super.sendSuccess(res, usersData.data!, usersData.message);
+                } else {
+                    super.sendError(res, usersData.message);
                 }
+            }
         } catch (e) {
             console.log(e);
             super.sendError(res)
@@ -103,8 +75,14 @@ export default class UsersController extends Controller {
 
     async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const {id, phone, firstname, lastname, email} = req.body;
+            const id = parseInt(req.params?.id);
+            const {phone, firstname, lastname, email} = req.body;
             const userService = new UsersService();
+            const data = await userService.updateUser(id, phone, firstname, lastname, email);
+            if (data.success) {
+                super.sendSuccess(res, data.data!, data.message);
+            } else
+                super.sendError(res, data.message);
         } catch (e) {
             console.log(e);
             super.sendError(res)

@@ -105,6 +105,8 @@ export default class UsersService {
                         'lastname': lastname ?? userFromDb.lastname,
                         'email': email ?? userFromDb.email
                     });
+                    const data = this.prepareData([userFromDb]);
+                    return ({message: 'User found', success: true, data: data});
                 }
             } catch (e) {
                 console.log(e);
