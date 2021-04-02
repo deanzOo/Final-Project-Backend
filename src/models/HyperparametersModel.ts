@@ -2,16 +2,16 @@ import { BuildOptions, Sequelize, Model, DataTypes } from "sequelize";
 
 export interface IHyperparameters extends Model {
     readonly id: number;
-    readonly batch_size: number,
-    readonly learning_rate: number,
-    readonly img_h: number,
-    readonly img_w: number,
-    readonly channels: number,
-    readonly use_bias: boolean,
-    readonly dropout_rate: number,
-    readonly epochs: number,
-    readonly conv_padding: number,
-    readonly latent_dim: number,
+    readonly batch_size: number;
+    readonly learning_rate: number;
+    readonly img_h: number;
+    readonly img_w: number;
+    readonly channels: number;
+    readonly use_bias: boolean;
+    readonly dropout_rate: number;
+    readonly epochs: number;
+    readonly conv_padding: number;
+    readonly latent_dim: number;
 }
 
 export type HyperparametersModelStatic = typeof Model & {

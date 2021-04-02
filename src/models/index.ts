@@ -46,9 +46,6 @@ NeuralNetwork.hasOne(Dataset, {
     as: 'Dataset',
     foreignKey: 'dataset_id'
 });
-Dataset.hasMany(NeuralNetwork, {
-    onDelete: 'NO ACTION'
-});
 NeuralNetwork.hasOne(Hyperparameters, {
     onDelete: 'CASCADE',
     as: 'Hyperparams',

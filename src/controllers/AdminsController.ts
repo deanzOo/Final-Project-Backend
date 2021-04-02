@@ -1,12 +1,8 @@
 import Controller, {Methods} from "../types/Controller";
 import {NextFunction, Request, Response} from "express";
 import AdminsService from "../services/AdminsService";
-import AuthMiddleware from "../middlewares/AuthMiddleware";
 import AdminsUsersController from "./Admins/AdminsUsersController";
-import UsersService from "../services/UsersService";
-
-const authMW = new AuthMiddleware();
-const adminGuard = authMW.AdminGuardian();
+import HyperparametersController from "./Admins/HyperparametersController";
 
 export default class AdminsController extends Controller {
     path = '/admins';
@@ -34,10 +30,11 @@ export default class AdminsController extends Controller {
         {
             path: '/users',
             controller: new AdminsUsersController()
+        },
+        {
+            path: '/hyperparams',
+            controller: new HyperparametersController()
         }
-    ];
-    highLevelMiddleware = [
-        adminGuard
     ];
 
     constructor(highLevelMiddleware?: Array<(req: Request, res: Response, next: NextFunction) => void>) {

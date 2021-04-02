@@ -50,8 +50,8 @@ export default class AuthController extends Controller {
         } else {
             try {
                 const {phone, password, firstname, lastname, email} = req.body;
-                const userService = new AuthService(phone, password, firstname, lastname, email);
-                const data = await userService.register();
+                const authService = new AuthService(phone, password, firstname, lastname, email);
+                const data = await authService.register();
                 if (data.success) {
                     super.sendSuccess(res, data.data!, data.message);
                 } else {

@@ -30,6 +30,8 @@ export default abstract class Controller {
         this.router = express.Router();
         this.routes = [];
         this.subroutes = [];
+        if (highLevelMiddleware)
+            this.highLevelMiddleware = highLevelMiddleware;
     }
 
     private setRoutes = (): express.Router => {
@@ -61,6 +63,8 @@ export default abstract class Controller {
 
     private setSubRoutes = (): express.Router => {
         for (const subroute of this.subroutes) {
+            for (const mw of this.highLevelMiddleware)
+                subroute.controller.highLevelMiddleware.push(mw);
             this.router.use(subroute.path, subroute.controller.setup());
         }
 
