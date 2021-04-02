@@ -46,13 +46,13 @@ NeuralNetwork.hasOne(Dataset, {
     as: 'Dataset',
     foreignKey: 'dataset_id'
 });
-NeuralNetwork.hasOne(Hyperparameters, {
+NeuralNetwork.belongsTo(Hyperparameters, {
     onDelete: 'CASCADE',
-    as: 'Hyperparams',
-    foreignKey: 'hyper_params_id'
 });
-Hyperparameters.belongsTo(NeuralNetwork, {
-    onDelete: 'NO ACTION'
+Hyperparameters.hasOne(NeuralNetwork, {
+    onDelete: 'CASCADE',
+    as: 'NeuralNetwork',
+    foreignKey: 'hyperparameter_id'
 });
 
 const db: IDatabase = {

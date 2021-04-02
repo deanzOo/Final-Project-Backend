@@ -22,6 +22,14 @@ export interface ISafeHyperparameters {
     latent_dim: number
 }
 
+export interface ISafeDataset {
+    id: number,
+    image_format: string,
+    location: string,
+    size: number,
+    name: string,
+}
+
 export interface ISafeAuthData {
     user?: ISafeUser;
     session_key?: string

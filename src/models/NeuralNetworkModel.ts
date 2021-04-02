@@ -3,7 +3,7 @@ import { BuildOptions, Sequelize, Model, DataTypes } from "sequelize";
 export interface INeuralNetwork extends Model {
     readonly id: number;
     readonly name: string,
-    readonly hyper_params_id: number,
+    readonly hyperparameter_id: number,
     readonly dataset_id: number,
 }
 
@@ -21,7 +21,7 @@ export function getNeuralNetwork(sequelize: Sequelize): NeuralNetworkModelStatic
             type: DataTypes.STRING,
             allowNull: true,
         },
-        hyper_params_id: {
+        hyperparameter_id: {
             type: DataTypes.INTEGER,
             allowNull: false
         },

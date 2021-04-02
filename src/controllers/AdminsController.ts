@@ -3,6 +3,7 @@ import {NextFunction, Request, Response} from "express";
 import AdminsService from "../services/AdminsService";
 import AdminsUsersController from "./Admins/AdminsUsersController";
 import HyperparametersController from "./Admins/HyperparametersController";
+import DatasetsController from "./Admins/DatasetsController";
 
 export default class AdminsController extends Controller {
     path = '/admins';
@@ -34,6 +35,10 @@ export default class AdminsController extends Controller {
         {
             path: '/hyperparams',
             controller: new HyperparametersController()
+        },
+        {
+            path: '/datasets',
+            controller: new DatasetsController()
         }
     ];
 
