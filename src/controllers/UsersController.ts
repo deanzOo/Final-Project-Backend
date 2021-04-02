@@ -64,7 +64,7 @@ export default class UsersController extends Controller {
                     if (phone) {
                         const temp_data = await userService.getUsers(phone);
                         if (temp_data.success) {
-                            data.push(temp_data.data);
+                            temp_data.data.forEach(user => data.push(user));
                             messages.push(temp_data.message)
                         } else
                             super.sendError(res, temp_data.message);
@@ -72,7 +72,7 @@ export default class UsersController extends Controller {
                     if (firstname) {
                         const temp_data = await userService.getUsers(firstname);
                         if (temp_data.success) {
-                            data.push(temp_data.data);
+                            temp_data.data.forEach(user => data.push(user));
                             messages.push(temp_data.message)
                         } else
                             super.sendError(res, temp_data.message);
@@ -80,7 +80,7 @@ export default class UsersController extends Controller {
                     if (lastname) {
                         const temp_data = await userService.getUsers(lastname);
                         if (temp_data.success) {
-                            data.push(temp_data.data);
+                            temp_data.data.forEach(user => data.push(user));
                             messages.push(temp_data.message)
                         } else
                             super.sendError(res, temp_data.message);
@@ -88,7 +88,7 @@ export default class UsersController extends Controller {
                     if (email) {
                         const temp_data = await userService.getUsers(email);
                         if (temp_data.success) {
-                            data.push(temp_data.data);
+                            temp_data.data.forEach(user => data.push(user));
                             messages.push(temp_data.message)
                         } else
                             super.sendError(res, temp_data.message);

@@ -14,6 +14,7 @@ export interface ISafeAuthData {
 }
 
 export interface ISafeUsersData {
+
     admins?: ISafeUser[],
     users?: ISafeUser[],
     admin?: ISafeUser,

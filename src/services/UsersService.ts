@@ -6,7 +6,7 @@ import {Op} from "sequelize";
 interface UsersReturnData {
     message: string;
     success: boolean;
-    data?: ISafeUsersData;
+    data?: ISafeUser [];
     statusCode?: number;
 }
 
@@ -44,7 +44,8 @@ export default class UsersService {
                                 }
                             },
                         ]
-                    }
+                    },
+                    include: 'Admin'
                 });
                 if (!usersFromDb)
                     return ({ message: 'No users found', success: false });
@@ -75,7 +76,7 @@ export default class UsersService {
             return ({ message: 'User id was not provided', success: false })
         } else {
             try {
-                const userFromDb = await db.User.findOne({where: {id: user_id}});
+                const userFromDb = await db.User.findOne({where: {id: user_id}, include: 'Admin'});
                 if (!userFromDb)
                     return ({ message: 'user was not found', success: false });
                 else {
@@ -94,7 +95,7 @@ export default class UsersService {
             return ({ message: 'User id was not provided', success: false })
         else {
             try {
-                const userFromDb = await db.User.findOne({where: {id: user_id}});
+                const userFromDb = await db.User.findOne({where: {id: user_id}, include: 'Admin'});
                 if (!userFromDb)
                     return ({ message: 'user was not found', success: false });
                 else {
@@ -112,14 +113,14 @@ export default class UsersService {
         }
     }
 
-    private prepareData(users: IUser[]): ISafeUsersData {
+    private prepareData(users: IUser[]): ISafeUser [] {
         if (users.length == 1) {
             const unsafe_user = users.pop();
             let isAdmin = false;
-            if (unsafe_user.admin)
+            if (unsafe_user.Admin)
                 isAdmin = true;
-            const data: ISafeUsersData = {
-                user: {
+            const data: ISafeUser [] = [
+                {
                     id: unsafe_user.id,
                     phone: unsafe_user.phone,
                     email: unsafe_user.email,
@@ -127,13 +128,12 @@ export default class UsersService {
                     lastname: unsafe_user.lastname,
                     isAdmin: isAdmin
                 }
-            }
+            ];
             return data;
         } else {
-            const data: ISafeUsersData = {
-                users: users.map(unsafe_data => {
+            const data: ISafeUser[] = users.map(unsafe_data => {
                     let isAdmin = false;
-                    if (unsafe_data.admin)
+                    if (unsafe_data.Admin)
                         isAdmin = true;
                     return {
                         id: unsafe_data.id,
@@ -143,8 +143,7 @@ export default class UsersService {
                         lastname: unsafe_data.lastname,
                         isAdmin: isAdmin
                     };
-                })
-            }
+                });
             return data;
         }
     }

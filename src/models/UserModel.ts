@@ -8,7 +8,7 @@ export interface IUser extends Model {
     readonly email?: string,
     readonly firstname?: string,
     readonly lastname?: string
-    readonly admin?: IAdmin
+    readonly Admin?: IAdmin
     readonly created_at: Date;
     readonly updated_at: Date;
 }
