@@ -11,8 +11,6 @@ interface AdminReturnData {
 
 export default class AdminService {
     constructor(
-        public readonly user_id?: number,
-        public readonly user?: ISafeUser
     ) {
     }
 

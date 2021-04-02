@@ -14,13 +14,13 @@ export default class AdminsController extends Controller {
             localMiddleware: []
         },
         {
-            path: '/:id',
+            path: '/',
             method: Methods.POST,
             handler: this.createAdmin,
             localMiddleware: []
         },
         {
-            path: '/:id',
+            path: '/',
             method: Methods.DELETE,
             handler: this.deleteAdmin,
             localMiddleware: []
@@ -44,7 +44,7 @@ export default class AdminsController extends Controller {
     async getAdmins(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const {id} = req.body;
-            const adminService = new AdminsService(id);
+            const adminService = new AdminsService();
             const data = await adminService.getAdmins();
             if (data.success) {
                 super.sendSuccess(res, data.data!, data.message);
@@ -60,7 +60,7 @@ export default class AdminsController extends Controller {
     async createAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const {id} = req.body;
-            const adminService = new AdminsService(id);
+            const adminService = new AdminsService();
             const createResult = await adminService.makeAdmin(id);
             if (createResult.success) {
                 super.sendSuccess(res, createResult.data!, createResult.message);
@@ -75,7 +75,7 @@ export default class AdminsController extends Controller {
 
     async deleteAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const id = parseInt(req.params?.id);
+            const {id} = req.body;
             const adminsService = new AdminsService();
             const data = await adminsService.deleteAdmin(id);
             if (data.success)
