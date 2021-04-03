@@ -1,7 +1,6 @@
 import Controller, {Methods} from "../types/Controller";
 import {NextFunction, Request, Response} from "express";
 import AuthService from "../services/AuthService";
-import AdminService from "../services/AdminsService";
 
 export default class AuthController extends Controller {
     path = '/auth';
@@ -25,22 +24,18 @@ export default class AuthController extends Controller {
     }
 
     async handleLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
-        if (req.body?.user) {
-            super.sendSuccess(res, req.body.user);
-        } else {
-            try {
-                const {phone, password} = req.body;
-                const authService = new AuthService(phone, password);
-                let user_data = await authService.login();
-                if (user_data.success) {
-                    super.sendSuccess(res, user_data.data!, user_data.message);
-                } else {
-                    super.sendError(res, user_data.message, user_data.statusCode);
-                }
-            } catch (e) {
-                console.log(e);
-                super.sendError(res)
+        try {
+            const {phone, password} = req.body;
+            const authService = new AuthService(phone, password);
+            let user_data = await authService.login();
+            if (user_data.success) {
+                super.sendSuccess(res, user_data.data!, user_data.message);
+            } else {
+                super.sendError(res, user_data.message, user_data.statusCode);
             }
+        } catch (e) {
+            console.log(e);
+            super.sendError(res)
         }
     }
 

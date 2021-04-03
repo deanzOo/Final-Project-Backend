@@ -14,13 +14,13 @@ export default class AdminsUsersController extends Controller {
             localMiddleware: []
         },
         {
-            path: `/:id`,
-            method: Methods.PUT,
+            path: `/`,
+            method: Methods.POST,
             handler: this.updateUser,
             localMiddleware: []
         },
         {
-            path: '/:id',
+            path: '/',
             method: Methods.DELETE,
             handler: this.toggleDeleteUser,
             localMiddleware: []
@@ -68,8 +68,7 @@ export default class AdminsUsersController extends Controller {
 
     async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const id = parseInt(req.params?.id);
-            const {phone, firstname, lastname, email} = req.body;
+            const {id, phone, firstname, lastname, email} = req.body;
             const userService = new UsersService();
             const data = await userService.updateUser(id, phone, firstname, lastname, email);
             if (data.success) {
@@ -84,7 +83,7 @@ export default class AdminsUsersController extends Controller {
 
     async toggleDeleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const id = parseInt(req.params?.id);
+            const { id } = req.body;
             const userService = new UsersService();
             const data = await userService.toggleDeleteUser(id);
             if (data.success)
