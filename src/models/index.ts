@@ -6,6 +6,7 @@ import {getHyperparameters, IHyperparameters, HyperparametersModelStatic} from "
 import {getDataset, IDataset, DatasetModelStatic} from "./DatasetModel";
 import {getNeuralNetwork, INeuralNetwork, NeuralNetworkModelStatic} from "./NeuralNetworkModel";
 import {ClassificationModelStatic, getClassification, IClassification} from "./ClassificationModel";
+import {getLogo, LogoModelStatic} from "./LogoModel";
 
 interface IDatabase {
     sequelize: Sequelize;
@@ -15,6 +16,7 @@ interface IDatabase {
     Dataset: DatasetModelStatic;
     NeuralNetwork: NeuralNetworkModelStatic;
     Classification: ClassificationModelStatic;
+    Logo: LogoModelStatic;
 }
 
 const sequelize = new Sequelize(
@@ -35,6 +37,7 @@ const Hyperparameters = getHyperparameters(sequelize);
 const Dataset = getDataset(sequelize);
 const NeuralNetwork = getNeuralNetwork(sequelize);
 const Classification = getClassification(sequelize);
+const Logo = getLogo(sequelize);
 
 User.hasOne(Admin, {
     onDelete: 'CASCADE',
@@ -58,6 +61,16 @@ Hyperparameters.hasOne(NeuralNetwork, {
     foreignKey: 'hyperparameter_id'
 });
 
+Logo.belongsTo(User, {
+    onDelete: 'NO ACTION',
+    as: 'User'
+});
+User.hasMany(Logo, {
+    onDelete: 'CASCADE',
+    as: 'Logos',
+    foreignKey: 'user_id'
+});
+
 const db: IDatabase = {
     sequelize,
     User,
@@ -65,7 +78,8 @@ const db: IDatabase = {
     Hyperparameters,
     Dataset,
     NeuralNetwork,
-    Classification
+    Classification,
+    Logo
 };
 
 db.sequelize.sync()

@@ -42,6 +42,15 @@ export interface ISafeClassification {
     name: string,
 }
 
+export interface ISafeLogo {
+    id: number,
+    width: number,
+    height: number,
+    channels: number,
+    format: string,
+    url: string
+}
+
 export interface ISafeAuthData {
     user?: ISafeUser;
     session_key?: string

@@ -6,6 +6,7 @@ import HyperparametersController from "./Admins/HyperparametersController";
 import DatasetsController from "./Admins/DatasetsController";
 import NeuralNetworksController from "./Admins/NeuralNetworksController";
 import ClassificationsController from "./Admins/ClassificationsController";
+import LogosController from "./Admins/LogosController";
 
 export default class AdminsController extends Controller {
     path = '/admins';
@@ -49,6 +50,10 @@ export default class AdminsController extends Controller {
         {
             path: '/classifications',
             controller: new ClassificationsController()
+        },
+        {
+            path: '/logos',
+            controller: new LogosController()
         }
     ];
 
