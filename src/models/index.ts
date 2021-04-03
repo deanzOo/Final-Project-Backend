@@ -41,11 +41,11 @@ User.hasOne(Admin, {
 Admin.belongsTo(User, {
     onDelete: 'NO ACTION'
 });
-NeuralNetwork.hasOne(Dataset, {
-    onDelete: 'NO ACTION',
-    as: 'Dataset',
+Dataset.hasMany(NeuralNetwork, {
+    onDelete: 'CASCADE',
+    as: 'NeuralNetowrks',
     foreignKey: 'dataset_id'
-});
+})
 NeuralNetwork.belongsTo(Hyperparameters, {
     onDelete: 'CASCADE',
 });

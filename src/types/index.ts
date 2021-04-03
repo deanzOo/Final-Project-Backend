@@ -30,6 +30,13 @@ export interface ISafeDataset {
     name: string,
 }
 
+export interface ISafeNeuralNetwork {
+    id: number,
+    name: string,
+    hyperparameter_id: number,
+    dataset_id: number,
+}
+
 export interface ISafeAuthData {
     user?: ISafeUser;
     session_key?: string
