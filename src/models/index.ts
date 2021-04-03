@@ -5,6 +5,7 @@ import {getAdmin, IAdmin, AdminModelStatic} from "./AdminModel";
 import {getHyperparameters, IHyperparameters, HyperparametersModelStatic} from "./HyperparametersModel";
 import {getDataset, IDataset, DatasetModelStatic} from "./DatasetModel";
 import {getNeuralNetwork, INeuralNetwork, NeuralNetworkModelStatic} from "./NeuralNetworkModel";
+import {ClassificationModelStatic, getClassification, IClassification} from "./ClassificationModel";
 
 interface IDatabase {
     sequelize: Sequelize;
@@ -13,6 +14,7 @@ interface IDatabase {
     Hyperparameters: HyperparametersModelStatic;
     Dataset: DatasetModelStatic;
     NeuralNetwork: NeuralNetworkModelStatic;
+    Classification: ClassificationModelStatic;
 }
 
 const sequelize = new Sequelize(
@@ -32,6 +34,7 @@ const Admin = getAdmin(sequelize);
 const Hyperparameters = getHyperparameters(sequelize);
 const Dataset = getDataset(sequelize);
 const NeuralNetwork = getNeuralNetwork(sequelize);
+const Classification = getClassification(sequelize);
 
 User.hasOne(Admin, {
     onDelete: 'CASCADE',
@@ -61,7 +64,8 @@ const db: IDatabase = {
     Admin,
     Hyperparameters,
     Dataset,
-    NeuralNetwork
+    NeuralNetwork,
+    Classification
 };
 
 db.sequelize.sync()
@@ -74,3 +78,4 @@ export type AdminModel = IAdmin;
 export type HyperparametersModel = IHyperparameters;
 export type DatasetModel = IDataset;
 export type NeuralNetworkModel = INeuralNetwork;
+export type ClassificationModel = IClassification;

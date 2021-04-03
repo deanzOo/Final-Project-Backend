@@ -37,6 +37,11 @@ export interface ISafeNeuralNetwork {
     dataset_id: number,
 }
 
+export interface ISafeClassification {
+    id: number,
+    name: string,
+}
+
 export interface ISafeAuthData {
     user?: ISafeUser;
     session_key?: string
