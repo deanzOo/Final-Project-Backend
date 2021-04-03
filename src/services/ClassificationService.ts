@@ -65,7 +65,7 @@ export default class ClassificationService {
         name: string,
     ): Promise<ClassificationReturnData> {
         try {
-            const createdDataset = await db.NeuralNetwork.create({
+            const createdDataset = await db.Classification.create({
                 name: name,
             });
             await createdDataset.validate();
