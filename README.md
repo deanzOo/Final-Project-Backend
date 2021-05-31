@@ -19,9 +19,9 @@
 
 # Set up
 ```
-git pull MAIN_URI
+git pull https://github.com/deanzOo/Final-Project-Backend.git
 git checkout pipelines
-git submodule PIPELINE_SYSTEM_URI src/vendors/PIPELINE_SYSTEM_FOLDER
+git submodule https://github.com/deanzOo/Final-Project-Pipelines.git
 npm install
 cd src/vendors/PIPELINE_SYSTEM_FOLDER
 pip install -r requirements.txt
